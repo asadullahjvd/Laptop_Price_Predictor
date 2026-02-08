@@ -1,25 +1,59 @@
 # Laptop Price Predictor
 
-## Project Features
-- **Price Prediction**: Predicts the price of a laptop based on its specifications.
-- **User-Friendly**: Simple interface for users to input laptop details.
-- **Data Visualization**: Provides insights through charts and graphs displaying price trends.
+## Overview
+The Laptop Price Predictor is a machine learning-based project that predicts laptop prices based on various features. The goal is to provide users with an estimated price of a laptop based on its specifications, helping them make informed purchase decisions.
 
-## Architecture
-- **Frontend**: Built using HTML, CSS, and JavaScript for user interaction.
-- **Backend**: A Flask-based API to handle requests and process predictions.
-- **Machine Learning Model**: Utilizes regression algorithms for price prediction.
-  - **Models Used**: Linear Regression, Decision Trees, etc.
+## Features
+- **Predictive Modeling**: Utilizes machine learning algorithms to predict prices based on laptop specifications.
+- **User-Friendly Interface**: A simple interface for users to input laptop details and receive price predictions.
+- **Data Visualization**: Displays visual insights about laptop price distributions and model performance metrics.
+- **Custom Prediction**: Users can input their laptop specifications to get a tailored price prediction.
+- **Training Data**: Trained on a comprehensive dataset of laptop specifications and prices.
 
-## Model Details
-- **Training Data**: The model is trained on a dataset consisting of various laptop specifications and their corresponding prices.
-- **Evaluation Metrics**: Models are evaluated using metrics such as MAE (Mean Absolute Error) and RMSE (Root Mean Squared Error).
+## Functionality
+1. **Input Specifications**: Users can enter various specifications such as:
+   - Brand
+   - Model
+   - Processor Type
+   - RAM Size
+   - Storage Type
+   - Graphics Card
+   - Display Size
 
-## Usage Instructions
-1. Clone the repository: `git clone https://github.com/asadullahjvd/Laptop_Price_Predictor.git`
-2. Install dependencies: `pip install -r requirements.txt`
-3. Run the application: `python app.py`
-4. Access the application at `http://localhost:5000`.
+2. **Price Prediction**: After entering the details, the application provides an estimated price based on the trained model.
 
-## Conclusion
-This project serves as a useful tool for individuals looking to estimate laptop prices based on their specifications. The model builds on effective machine learning practices to provide accurate results.
+3. **Model Training**: 
+   - The model can be retrained on new data to improve its accuracy.
+   - Evaluation metrics include RMSE (Root Mean Square Error) and R-squared values.
+
+## Installation
+To run the project locally, follow these steps:
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/asadullahjvd/Laptop_Price_Predictor.git
+   ```
+2. Navigate to the project directory:
+   ```bash
+   cd Laptop_Price_Predictor
+   ```
+3. Install required packages:
+   ```bash
+   pip install -r requirements.txt
+   ```
+4. Run the application:
+   ```bash
+   python app.py
+   ```
+
+## Usage
+- Input the laptop specifications in the form provided.
+- Click on the ‘Predict Price’ button to see the estimated price.
+
+## Contributing
+Contributions are welcome! Please open an issue or submit a pull request for feature requests or bug fixes.
+
+## License
+This project is licensed under the MIT License. See the LICENSE file for details.
+
+## Acknowledgments
+- Thanks to the contributors and the open-source community for providing datasets and libraries that made this project possible.
