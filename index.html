@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Laptop Price Predictor - Smart Price Estimation</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <!-- Animated Background Elements -->
+    <div class="background-animation">
+        <div class="floating-shape shape1"></div>
+        <div class="floating-shape shape2"></div>
+        <div class="floating-shape shape3"></div>
+        <div class="floating-shape shape4"></div>
+        <div class="floating-shape shape5"></div>
+    </div>
+
+    <div class="container">
+        <div class="header">
+            <h1 class="title-animated">💻 Laptop Price Predictor</h1>
+            <p class="subtitle fade-in">Get instant price estimates based on specifications</p>
+        </div>
+
+        <div class="main-content">
+            <form method="POST" id="priceForm">
+                <div class="form-section slide-in">
+                    <h3>📱 Basic Information</h3>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="company">Brand</label>
+                            <select name="company" id="company" required>
+                                {% for c in companies %}
+                                <option value="{{ c }}">{{ c }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="typename">Laptop Type</label>
+                            <select name="typename" id="typename" required>
+                                {% for t in types %}
+                                <option value="{{ t }}">{{ t }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="os">Operating System</label>
+                            <select name="os" id="os" required>
+                                <option value="Windows">Windows</option>
+                                <option value="Others/No OS/Linux">Others/No OS/Linux</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="weight">Weight (kg)</label>
+                            <input type="number" step="0.01" name="weight" id="weight" placeholder="e.g., 1.5" required>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section slide-in" style="animation-delay: 0.1s">
+                    <h3>⚙️ Performance Specs</h3>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="cpu">Processor (CPU)</label>
+                            <select name="cpu" id="cpu" required>
+                                {% for c in cpus %}
+                                <option value="{{ c }}">{{ c }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="gpu">Graphics (GPU)</label>
+                            <select name="gpu" id="gpu" required>
+                                {% for g in gpus %}
+                                <option value="{{ g }}">{{ g }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="ram">RAM (GB)</label>
+                            <input type="number" name="ram" id="ram" placeholder="e.g., 8" min="1" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="ssd">SSD Storage (GB)</label>
+                            <input type="number" name="ssd" id="ssd" placeholder="e.g., 256" min="0" value="0" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="hdd">HDD Storage (GB)</label>
+                            <input type="number" name="hdd" id="hdd" placeholder="e.g., 1000" min="0" value="0" required>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section slide-in" style="animation-delay: 0.2s">
+                    <h3>🖥️ Display Features</h3>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="ppi">PPI (Pixels Per Inch)</label>
+                            <input type="number" step="0.1" name="ppi" id="ppi" placeholder="e.g., 141.2" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="touchscreen">Touchscreen</label>
+                            <select name="touchscreen" id="touchscreen" required>
+                                <option value="0">No</option>
+                                <option value="1">Yes</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="ips">IPS Display</label>
+                            <select name="ips" id="ips" required>
+                                <option value="0">No</option>
+                                <option value="1">Yes</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" class="submit-btn">
+                    <span class="btn-text">🔍 Calculate Price</span>
+                    <span class="btn-shine"></span>
+                </button>
+            </form>
+
+            {% if price %}
+            <div class="result-card bounce-in">
+                <div class="result-icon pulse">💰</div>
+                <h2>Estimated Price</h2>
+                <div class="price counter">Rs {{ "{:,}".format(price) }}</div>
+                <p class="result-note">*Price is estimated based on machine learning model</p>
+                <div class="sparkles">
+                    <span class="sparkle">✨</span>
+                    <span class="sparkle">✨</span>
+                    <span class="sparkle">✨</span>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+
+        <footer class="fade-in">
+            <p>Powered by LightGBM Machine Learning | © 2026</p>
+        </footer>
+    </div>
+
+    <script>
+        // Add interactive hover effects to form groups
+        document.querySelectorAll('.form-group').forEach(group => {
+            group.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-2px)';
+            });
+            group.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0)';
+            });
+        });
+
+        // Add ripple effect on button click
+        document.querySelector('.submit-btn').addEventListener('click', function(e) {
+            let ripple = document.createElement('span');
+            ripple.classList.add('ripple');
+            this.appendChild(ripple);
+            
+            let x = e.clientX - e.target.offsetLeft;
+            let y = e.clientY - e.target.offsetTop;
+            
+            ripple.style.left = `${x}px`;
+            ripple.style.top = `${y}px`;
+            
+            setTimeout(() => {
+                ripple.remove();
+            }, 600);
+        });
+
+        // Parallax effect on mouse move
+        document.addEventListener('mousemove', (e) => {
+            const shapes = document.querySelectorAll('.floating-shape');
+            const mouseX = e.clientX / window.innerWidth;
+            const mouseY = e.clientY / window.innerHeight;
+            
+            shapes.forEach((shape, index) => {
+                const speed = (index + 1) * 20;
+                const x = (mouseX - 0.5) * speed;
+                const y = (mouseY - 0.5) * speed;
+                shape.style.transform = `translate(${x}px, ${y}px) rotate(${x}deg)`;
+            });
+        });
+
+        // Add glow effect on input focus
+        document.querySelectorAll('input, select').forEach(input => {
+            input.addEventListener('focus', function() {
+                this.parentElement.style.filter = 'drop-shadow(0 0 8px rgba(102, 126, 234, 0.3))';
+            });
+            input.addEventListener('blur', function() {
+                this.parentElement.style.filter = 'none';
+            });
+        });
+    </script>
+</body>
+</html>
