@@ -4,3 +4,5 @@ pandas
 joblib
 gunicorn
 python-dotenv
+streamlit
+scikit-learn
