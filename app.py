@@ -1,83 +1,56 @@
-from flask import Flask, render_template, request
+import streamlit as st
 import numpy as np
 import pandas as pd
 import joblib
 
-app = Flask(__name__)
-
-# Load model
 model = joblib.load("random_forest_model.joblib")
+X_columns = list(model.feature_names_in_)
 
-# Get actual feature names from the model
-X_columns = list(model.feature_name_)
+st.title("💻 Laptop Price Predictor")
 
-# Dropdown options (extracted from feature names)
-companies = ["Apple", "Asus", "Chuwi", "Dell", "Fujitsu", "Google", "HP", "Huawei", 
-             "LG", "Lenovo", "MSI", "Mediacom", "Microsoft", "Razer", "Samsung", 
+companies = ["Apple", "Asus", "Chuwi", "Dell", "Fujitsu", "Google", "HP", "Huawei",
+             "LG", "Lenovo", "MSI", "Mediacom", "Microsoft", "Razer", "Samsung",
              "Toshiba", "Vero", "Xiaomi"]
 types = ["Gaming", "Netbook", "Notebook", "Ultrabook", "Workstation"]
 cpus = ["Intel Core i3", "Intel Core i5", "Intel Core i7", "Other Intel Processor"]
 gpus = ["Intel", "Nvidia"]
 os_options = ["Windows", "Others/No OS/Linux"]
 
-@app.route("/", methods=["GET", "POST"])
-def index():
-    price = None
+company   = st.selectbox("Company", companies)
+typename  = st.selectbox("Type", types)
+cpu       = st.selectbox("CPU", cpus)
+gpu       = st.selectbox("GPU", gpus)
+os_choice = st.selectbox("OS", os_options)
 
-    if request.method == "POST":
-        # Get dropdown values
-        company = request.form["company"]
-        cpu = request.form["cpu"]
-        gpu = request.form["gpu"]
-        typename = request.form["typename"]
-        os_choice = request.form["os"]
+ram         = st.selectbox("RAM (GB)", [4, 8, 16, 32, 64])
+weight      = st.number_input("Weight (kg)", 0.5, 5.0, 2.0)
+touchscreen = st.selectbox("Touchscreen", [0, 1])
+ips         = st.selectbox("IPS Display", [0, 1])
+ppi         = st.number_input("PPI", 100.0, 400.0, 150.0)
+hdd         = st.selectbox("HDD (GB)", [0, 256, 512, 1000, 2000])
+ssd         = st.selectbox("SSD (GB)", [0, 128, 256, 512, 1000])
 
-        # Numeric inputs
-        ram = int(request.form["ram"])
-        weight = float(request.form["weight"])
-        touchscreen = int(request.form["touchscreen"])
-        ips = int(request.form["ips"])
-        ppi = float(request.form["ppi"])
-        hdd = int(request.form["hdd"])
-        ssd = int(request.form["ssd"])
+if st.button("Predict Price"):
+    input_df = pd.DataFrame(np.zeros((1, len(X_columns))), columns=X_columns)
 
-        # Create empty input dataframe with all features as 0
-        input_df = pd.DataFrame(np.zeros((1, len(X_columns))), columns=X_columns)
+    input_df["Ram"]         = ram
+    input_df["Weight"]      = weight
+    input_df["Touchscreen"] = touchscreen
+    input_df["IPS"]         = ips
+    input_df["PPI"]         = ppi
+    input_df["HDD"]         = hdd
+    input_df["SSD"]         = ssd
 
-        # Fill numerical features in the exact order expected by model
-        input_df["Ram"] = ram
-        input_df["Weight"] = weight
-        input_df["Touchscreen"] = touchscreen
-        input_df["IPS"] = ips
-        input_df["PPI"] = ppi
-        input_df["HDD"] = hdd
-        input_df["SSD"] = ssd
+    input_df[f"Company_{company}"]                        = 1
+    input_df[f"TypeName_{typename}"]                      = 1
+    input_df[f"Cpu_brand_{cpu.replace(' ', '_')}"]        = 1
+    input_df[f"Gpu_brand_{gpu}"]                          = 1
 
-        # One-hot encoding for categorical features
-        input_df[f"Company_{company}"] = 1
-        input_df[f"TypeName_{typename}"] = 1
-        input_df[f"Cpu_brand_{cpu.replace(' ', '_')}"] = 1
-        input_df[f"Gpu_brand_{gpu}"] = 1
-        
-        # Handle OS feature (special case due to slashes in feature name)
-        if os_choice == "Windows":
-            input_df["OS_Windows"] = 1
-        else:
-            input_df["OS_Others/No_OS/Linux"] = 1
+    if os_choice == "Windows":
+        input_df["OS_Windows"] = 1
+    else:
+        input_df["OS_Others/No_OS/Linux"] = 1
 
-        # Predict (model output is log(price), so apply exp to get actual price)
-        log_prediction = model.predict(input_df)[0]
-        price = int(np.exp(log_prediction))
-
-    return render_template(
-        "index.html",
-        price=price,
-        companies=companies,
-        cpus=cpus,
-        gpus=gpus,
-        types=types,
-        os_options=os_options
-    )
-
-if __name__ == "__main__":
-    app.run(debug=True)
+    log_prediction = model.predict(input_df)[0]
+    price = int(np.exp(log_prediction))
+    st.success(f"💰 Estimated Laptop Price: **Rs. {price:,}**")
